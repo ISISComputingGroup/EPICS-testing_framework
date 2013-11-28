@@ -33,13 +33,20 @@ def test_generator(iocname, type, pv_write, pv_read, value, expected):
         if type == "PUTGET":
             pv_w.put(value)
             time.sleep(DELAY)
-            self.assertEqual(expected, pv_r.get(as_string=True), 'The PV values do not match')
+            got = pv_r.get(as_string=True)
+            fail_string = 'The PV values do not match, sent %s got %s' % (value, got)
+            self.assertEqual(expected, got, fail_string)
         elif type == "PUTERROR":
             self.assertRaises(ValueError, pv_w.put, value)
         elif type == "GET":
-            self.assertEqual(expected, pv_r.get(as_string=True), 'The value read was not as expected')
+            got = pv_r.get(as_string=True)
+            fail_string = 'The value read was not as expected, got %s but expected %s' % (got, value)
+            self.assertEqual(expected, got, fail_string)
         elif type == "EQUAL":
-            self.assertEqual(pv_w.get(as_string=True), pv_r.get(as_string=True), 'The PV values do not match')
+            got1 = pv_r.get(as_string=True)
+            got2 = pv_w.get(as_string=True)
+            fail_string = 'The PV values do not match, got %s and %s' % (got1, got2)
+            self.assertEqual(got1, got2, fail_string)
     return test
     
 def read_tests(filename):
@@ -67,7 +74,7 @@ def read_tests(filename):
 if __name__ == '__main__': 
     #Defaults
     DELAY = 2
-    filename = pv_tests.txt
+    filename = 'pv_tests.txt'
     results_dir = os.path.join(os.getcwd(), 'results')
     try:
         pvprefix = os.environ['MYPVPREFIX']
