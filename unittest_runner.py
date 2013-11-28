@@ -34,13 +34,13 @@ def test_generator(iocname, type, pv_write, pv_read, value, expected):
             pv_w.put(value)
             time.sleep(DELAY)
             got = pv_r.get(as_string=True)
-            fail_string = 'The PV values do not match, sent %s got %s' % (value, got)
+            fail_string = 'The PV values do not match, sent %s got %s but expected %s' % (value, got, expected)
             self.assertEqual(expected, got, fail_string)
         elif type == "PUTERROR":
             self.assertRaises(ValueError, pv_w.put, value)
         elif type == "GET":
             got = pv_r.get(as_string=True)
-            fail_string = 'The value read was not as expected, got %s but expected %s' % (got, value)
+            fail_string = 'The value read was not as expected, got %s but expected %s' % (got, expected)
             self.assertEqual(expected, got, fail_string)
         elif type == "EQUAL":
             got1 = pv_r.get(as_string=True)
