@@ -39,9 +39,16 @@ def test_generator(iocname, type, pv_write, pv_read, value, expected):
         elif type == "PUTERROR":
             self.assertRaises(ValueError, pv_w.put, value)
         elif type == "GET":
-            got = pv_r.get(as_string=True)
-            fail_string = 'The value read was not as expected, got %s but expected %s' % (got, expected)
-            self.assertEqual(expected, got, fail_string)
+            as_str=False
+            dbl = 0
+            try:
+                dbl = float(expected)
+            except:
+                as_str=True
+                dbl = expected
+            got = pv_r.get(as_string=as_str)
+            fail_string = 'The value read was not as expected, got %s but expected %s' % (got, dbl)
+            self.assertEqual(dbl, got, fail_string)
         elif type == "EQUAL":
             got1 = pv_r.get(as_string=True)
             got2 = pv_w.get(as_string=True)
@@ -60,6 +67,9 @@ def read_tests(filename):
             #First line is the IOC name
             ioc = line.strip()
             firstline = False
+        elif line.strip().startswith('#'):
+            # skip line processing if first character is comment
+            pass
         elif line.strip() != '':
             #It is a test
             #Name, type, write PV, read PV, write val, expected val
