@@ -5,7 +5,9 @@ import time
 import argparse
 from epics import PV
 
-#The format for the tests is: name, test type, first PV, second PV, write value, expected value
+# First line of file must be IOC name (see example below)
+# Can use '#' character for comments
+# The format for the tests is: name, test type, first PV, second PV, write value, expected value
 
 #Test types:
 #   PUTGET = write a value to the first PV and then read the second PV to see if the value is the same
